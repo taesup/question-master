@@ -33,9 +33,11 @@
       padding-bottom: 30px;
       color: #333;
     }
+    .question .question-start { display: none; }
     .question .question-none { display: none; }
     .question .question-restarted { display: none; }
     .question .question-found { display: none; }
+    .question .question-start.show { display: block; }
     .question .question-none.show { display: block; }
     .question .question-restarted.show { display: block; }
     .question .question-found.show { display: block; }
@@ -56,6 +58,7 @@
   <div class="question">
 
     <div class="question-output">
+      <div id="start" class="question-start">Ready?</div>
       <div id="found" class="question-found">
         (<span id="remaining"></span>/<span id="total"></span>) <span id="question"></span>
       </div>
@@ -86,12 +89,10 @@
       req.send();
     }
 
-    function restart() {
+    function restart(update) {
       request('GET', '/api/restart', (err, res) => {
         if (err) { return console.log(err); }
-        document.getElementById('restarted').classList.add('show');
-        document.getElementById('none').classList.remove('show');
-        document.getElementById('found').classList.remove('show');
+        if (update) { return updateView('restarted'); }
       });
     }
 
@@ -105,12 +106,7 @@
         const total = res.data.total;
         const remaining = total - res.data.remaining;
 
-        if (!question) {
-          document.getElementById('found').classList.remove('show');
-          document.getElementById('restarted').classList.remove('show');
-          document.getElementById('none').classList.add('show');
-          return;
-        }
+        if (!question) { return updateView('none'); }
 
         // append question to DOM
         const questionEl = document.getElementById('question');
@@ -125,15 +121,36 @@
         if (remaining === 0 || remaining) { remainingEl.innerHTML = remaining; }
 
         // show question
-        document.getElementById('found').classList.add('show');
-        document.getElementById('restarted').classList.remove('show');
-        document.getElementById('none').classList.remove('show');
+        return updateView('question');
       });
     }
 
-    document.getElementById('next').addEventListener('click', next);
-    document.getElementById('restart').addEventListener('click', restart);
-    next();
+    function updateView(view) {
+      document.getElementById('start').classList.remove('show');
+      document.getElementById('found').classList.remove('show');
+      document.getElementById('restarted').classList.remove('show');
+      document.getElementById('none').classList.remove('show');
+
+      if (view === 'question') { document.getElementById('found').classList.add('show'); }
+      else if (view === 'restarted') { document.getElementById('restarted').classList.add('show'); }
+      else if (view === 'none') { document.getElementById('none').classList.add('show'); }
+      else { document.getElementById('start').classList.add('show'); }
+    }
+
+    function init() {
+      // bind button event handlers
+      document.getElementById('next').addEventListener('click', next);
+      document.getElementById('restart').addEventListener('click', restart.bind(this, true));
+
+      // restart the questions from scratch
+      restart();
+
+      // update view to show start screen
+      updateView('start');
+    }
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') { init(); }
+    else { document.addEventListener('DOMContentLoaded', init); }
   </script>
 </body>
 </html>
