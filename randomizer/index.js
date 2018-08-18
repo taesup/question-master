@@ -1,6 +1,6 @@
 // pull questions from baseline and modification files
-const baseline = require('./questions/baseline');
-const modifications = require('./questions/modifications');
+const baseline = require('../questions/baseline');
+const modifications = require('../questions/modifications');
 
 // aggregate all questions into one collection
 const baselineQuestions = Object.values(baseline);

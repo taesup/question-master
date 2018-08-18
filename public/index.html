@@ -13,6 +13,7 @@
       box-sizing: border-box;
       font-size: 16px;
       background-color: #eee;
+      color: #555;
     }
     *, *:before, *:after { box-sizing: inherit; }
     body { display: flex; }
@@ -30,6 +31,7 @@
       width: 100%;
       text-align: center;
       padding-bottom: 30px;
+      color: #333;
     }
     .question .question-none { display: none; }
     .question .question-restarted { display: none; }
@@ -39,11 +41,13 @@
     .question .question-found.show { display: block; }
 
     button {
-      border: 0;
+      border: 2px solid #0366d6;
       padding: 15px;
       margin-right: 15px;
       font-size: 16px;
       cursor: pointer;
+      border-radius: 10px;
+      outline: none;
     }
     button:last-child { margin-right: 0; }
   </style>
