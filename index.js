@@ -14,10 +14,18 @@ function getQuestion() {
   const question = questions.splice(questionIndex, 1)[0];
 
   // move question into askedQuestions
-  askedQuestions.push(question);
+  if (question) { askedQuestions.push(question); }
 
   // return current question
   return question;
+}
+
+function getTotal() {
+  return questions.length + askedQuestions.length;
+}
+
+function getRemaining() {
+  return questions.length;
 }
 
 function restart() {
@@ -27,5 +35,7 @@ function restart() {
 
 module.exports = {
   getQuestion: getQuestion,
+  getTotal: getTotal,
+  getRemaining: getRemaining,
   restart: restart
 };
